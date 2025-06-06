@@ -20,6 +20,7 @@ A simple backend for an online shop built with **Express**, **TypeScript**, **Pr
 - **Language**: TypeScript
 - **ORM**: Prisma
 - **Database**: PostgreSQL (via [Neon](https://neon.tech/))
+- **Validation**: Zod
 
 ---
 
@@ -29,3 +30,17 @@ A simple backend for an online shop built with **Express**, **TypeScript**, **Pr
    ```bash
    git clone https://github.com/JivkoJelev91/Online-shop.git
    cd online-shop
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+
+3. **Configure environment variables:**
+
+   ```bash
+   Create a .env file based on .env.example and update your database connection string and other config as needed.
+
+4. **Run the development server:**
+
+   ```bash
+   npm run dev
