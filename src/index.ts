@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
@@ -32,7 +32,7 @@ app.use('/cart', cartRouter);
 app.use('/orders', orderRouter);
 
 // Global error handler
-app.use((err: any, _: Request, res: Response) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
   res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
