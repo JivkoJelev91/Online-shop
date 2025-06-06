@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
+// Load environment variables from .env
+dotenv.config();
+
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
@@ -9,8 +12,6 @@ import cartRouter from './routes/cart.routes';
 import authRouter from './routes/auth.routes';
 import orderRouter from './routes/order.routes';
 
-// Load environment variables from .env
-dotenv.config();
 
 const app = express();
 

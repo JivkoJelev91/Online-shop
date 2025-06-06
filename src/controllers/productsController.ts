@@ -8,6 +8,7 @@ const productSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string().optional(),
+  stock: z.number().int().nonnegative().optional(),
 });
 
 export async function getProducts(req: Request, res: Response) {
@@ -66,9 +67,9 @@ export async function createProduct(req: Request, res: Response) {
   if (!result.success) {
     return res.status(400).json({ error: result.error.errors });
   }
-  const { name, price, description } = result.data;
+  const { name, price, description, stock } = result.data;
   try {
-    const product = await prisma.product.create({ data: { name, price, description } });
+    const product = await prisma.product.create({ data: { name, price, description, stock } });
     res.status(201).json(product);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create product' });

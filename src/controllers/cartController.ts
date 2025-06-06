@@ -3,11 +3,12 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
-
-const addToCartSchema = z.object({
-  productId: z.number(),
-  quantity: z.number().min(1).optional(),
-});
+const addToCartSchema = z.array(
+  z.object({
+    productId: z.number(),
+    quantity: z.number().min(1).optional(),
+  })
+);
 
 const updateCartQuantitySchema = z.object({
   quantity: z.number().min(1),
@@ -33,22 +34,25 @@ export async function addToCart(req: Request, res: Response) {
     return res.status(400).json({ error: result.error.errors });
   }
   const userId = (req as any).userId;
-  const { productId, quantity = 1 } = result.data;
-  try {
+  const items = result.data;
+  const responses = [];
+  for (const { productId, quantity = 1 } of items) {
     const product = await prisma.product.findUnique({ where: { id: productId } });
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      responses.push({ productId, error: 'Product not found' });
+      continue;
     }
     if (product.stock !== undefined && product.stock < quantity) {
-      return res.status(400).json({ error: 'Not enough stock' });
+      responses.push({ productId, error: 'Not enough stock' });
+      continue;
     }
     const cartItem = await prisma.cartItem.create({
       data: { userId, productId, quantity },
+      include: { product: true },
     });
-    res.status(201).json(cartItem);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to add to cart' });
+    responses.push(cartItem);
   }
+  res.status(201).json(responses);
 }
 
 export async function updateCartItem(req: Request, res: Response) {

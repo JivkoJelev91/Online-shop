@@ -8,9 +8,9 @@ const router = Router();
 router.post('/checkout', authMiddleware, checkout);
 
 // GET /orders - get all orders for the authenticated user
-router.get('/orders', authMiddleware, getUserOrders);
+router.get('/', authMiddleware, getUserOrders);
 
 // GET /admin/orders (admin only) - get all orders
-router.get('/admin/orders', authMiddleware, isAdminMiddleware, getAllOrders);
+router.get('/orders', authMiddleware, isAdminMiddleware, getAllOrders);
 
 export default router;
