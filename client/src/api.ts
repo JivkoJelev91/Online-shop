@@ -19,4 +19,14 @@ export async function getProducts() {
   return Array.isArray(data.products) ? data.products : data;
 }
 
+export async function signup(name: string, email: string, password: string) {
+  const res = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password })
+  });
+  const data = await res.json();
+  return { ok: res.ok, data };
+}
+
 // Add more API functions here as needed

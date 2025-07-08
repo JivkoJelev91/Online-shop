@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { signup } from '../store/authSlice';
+import { signup as signupApi, login as loginApi } from '../api';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -52,19 +51,34 @@ const Signup: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { loading, error, user } = useAppSelector(state => state.auth);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(signup({ name, email, password }));
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await signupApi(name, email, password);
+      if (!res.ok) {
+        setError(res.data?.error || 'Signup failed');
+        setLoading(false);
+        return;
+      }
+      // Auto-login after signup
+      const loginRes = await loginApi(email, password);
+      if (loginRes.ok && loginRes.data.token) {
+        localStorage.setItem('token', loginRes.data.token);
+        navigate('/');
+      } else {
+        setError('Signup succeeded but login failed. Please try logging in.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
