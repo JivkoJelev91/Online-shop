@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import styled, { createGlobalStyle } from 'styled-components';
 import type { Product } from '../types/product';
 import { useNavigate } from 'react-router-dom';
+import { getProducts } from '../api';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -66,117 +67,6 @@ const StyledSelect = styled.select`
   }
 `;
 
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: 'Wireless Headphones',
-    price: 99.99,
-    stock: 10,
-    createdAt: '',
-    updatedAt: '',
-    description: 'High quality wireless headphones with noise cancellation.'
-  },
-  {
-    id: 2,
-    name: 'Smart Watch',
-    price: 149.99,
-    stock: 5,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Track your fitness and notifications in style.'
-  },
-  {
-    id: 3,
-    name: 'Bluetooth Speaker',
-    price: 59.99,
-    stock: 20,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Portable and powerful sound for any occasion.'
-  },
-  {
-    id: 4,
-    name: 'Gaming Mouse',
-    price: 39.99,
-    stock: 15,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Precision and comfort for gamers.'
-  },
-  {
-    id: 5,
-    name: '4K Monitor',
-    price: 299.99,
-    stock: 7,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Ultra HD display for work and play.'
-  },
-  {
-    id: 6,
-    name: 'Mechanical Keyboard',
-    price: 89.99,
-    stock: 12,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Tactile keys and RGB lighting.'
-  },
-  {
-    id: 7,
-    name: 'Smartphone',
-    price: 699.99,
-    stock: 8,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Latest model with stunning display and camera.'
-  },
-  {
-    id: 8,
-    name: 'Tablet',
-    price: 399.99,
-    stock: 6,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Portable and powerful for work and play.'
-  },
-  {
-    id: 9,
-    name: 'Fitness Tracker',
-    price: 49.99,
-    stock: 18,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Track your steps, sleep, and more.'
-  },
-  {
-    id: 10,
-    name: 'Drone',
-    price: 499.99,
-    stock: 3,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Capture stunning aerial footage.'
-  },
-  {
-    id: 11,
-    name: 'VR Headset',
-    price: 249.99,
-    stock: 4,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Immersive virtual reality experience.'
-  },
-  {
-    id: 12,
-    name: 'Portable SSD',
-    price: 129.99,
-    stock: 14,
-    createdAt: '',
-    updatedAt: '',
-    description: 'Fast and reliable storage on the go.'
-  },
-];
-
 const ProductImage = styled.img`
   width: 100%;
   max-width: 240px;
@@ -233,16 +123,15 @@ const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('price-asc');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   // TODO: Replace with real auth check
   const isAuthenticated = true;
 
   useEffect(() => {
-    // Fetch products from backend
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(Array.isArray(data) && data.length > 0 ? data : mockProducts))
-      .catch(() => setProducts(mockProducts));
+    getProducts()
+      .then(setProducts)
+      .catch(() => setError('Could not load products.'));
   }, []);
 
   const filtered = products
@@ -261,6 +150,7 @@ const Home: React.FC = () => {
         <ShopTitle>🛒 Modern Online Shop</ShopTitle>
       </HeaderBar>
       <Container>
+        {error && <div style={{color:'#ef4444',textAlign:'center',marginBottom:20}}>{error}</div>}
         <Controls>
           <Input
             placeholder="Search products..."

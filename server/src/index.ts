@@ -46,7 +46,7 @@ app.use(helmet({
 
 // Configure CORS with specific options
 app.use(cors({
-  origin: 'http://localhost:4000', // Allow only this origin for now
+  origin: 'http://localhost:5173', // Allow only this origin for now
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

@@ -3,6 +3,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import styled, { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { login as loginApi } from '../api';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -57,16 +58,19 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    // Mock API call
-    setTimeout(() => {
+    try {
+      const { ok, data } = await loginApi(email, password);
       setLoading(false);
-      if (email === 'user@example.com' && password === 'password') {
-        localStorage.setItem('token', 'mock-jwt-token');
+      if (ok && data.token) {
+        localStorage.setItem('token', data.token);
         navigate('/');
       } else {
-        setError('Invalid email or password');
+        setError(data.error || 'Invalid email or password');
       }
-    }, 900);
+    } catch (err) {
+      setLoading(false);
+      setError('Network error. Please try again.');
+    }
   };
 
   return (
