@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Prisma, PrismaClient } from '../generated/prisma';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 
 const prisma = new PrismaClient();
@@ -20,7 +20,7 @@ export async function getProducts(req: Request, res: Response) {
     const max = req.query.max ? parseFloat(req.query.max as string) : undefined;
     const search = req.query.search as string;
 
-    const where: Prisma.ProductWhereInput = {};
+    const where: any = {};
     if (min !== undefined || max !== undefined) {
       where.price = {};
       if (min !== undefined) where.price.gte = min;
