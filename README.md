@@ -92,7 +92,7 @@ For more detailed information, see the README files for each part of the project
 | Area             | Technology              |
 | ---------------- | ----------------------- |
 | Frontend         | React, TypeScript, Vite |
-| Styling          | Tailwind CSS            |
+| Styling          | styled-components       |
 | State Management | Redux Toolkit           |
 | Backend          | Node.js, Express        |
 | Database         | PostgreSQL              |
